@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+  dev-node:
+    image: 'node:17-alpine3.14'
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: "sh -c 'npm install && npm run build && npm run start:prod ' "
+    depends_on:
+      - dev-db-pg
+    environment:
+      NODE_ENV: development
+      POSTGRES_HOST: dev-db-pg
+      POSTGRES_USER: golden
+      POSTGRES_PASSWORD: golden
+      POSTGRES_DB: golden
+    ports:
+      - 3000:3000
+  dev-db-pg:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: golden
+      POSTGRES_PASSWORD: golden
+      POSTGRES_DB: golden
